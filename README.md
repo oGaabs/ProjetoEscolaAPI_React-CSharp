@@ -1,5 +1,5 @@
 <div>
-   <img align="center" alt="Exemplos API Sucesso e Erro"  height="400" width="650" src="https://user-images.githubusercontent.com/53992405/190329081-095c75c6-985b-4678-87bd-99008b1b0f6c.png"/>
+   <img align="center" alt="Exemplos API Sucesso e Erro"  height="400" width="600" src="https://user-images.githubusercontent.com/53992405/190329081-095c75c6-985b-4678-87bd-99008b1b0f6c.png"/>
       <img align="center" alt="Exemplos API Sucesso e Erro" sty height="400" src="https://user-images.githubusercontent.com/53992405/190329265-3a43ceb1-ac0d-48dd-b146-090cb3604f44.png"/>
 </div>
 
