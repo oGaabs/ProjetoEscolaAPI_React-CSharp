@@ -1,0 +1,8 @@
+:root {
+  --bg-menu: #191622;
+}
+
+body {
+  box-sizing: border-box;
+  font-family: "Pacifico", sans-serif;
+}
