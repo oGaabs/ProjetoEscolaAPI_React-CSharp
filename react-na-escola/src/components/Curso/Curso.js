@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { Component } from "react";
 import axios from "axios";
 import { BsFillPencilFill, BsFillTrash2Fill } from "react-icons/bs";
@@ -252,3 +253,13 @@ export default class CrudCurso extends Component {
     }
 }
 
+=======
+
+import NotFound from '../NotFound/NotFound'
+
+export default function Curso(){
+    return (
+        <NotFound title='Curso' content='Pagina em construção'/>
+    )
+}
+>>>>>>> 8fb322a6e925b5a1e938b3ae1851a12ff07eb935
