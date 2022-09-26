@@ -1,0 +1,93 @@
+:root {
+    --bg-menu: #191622;
+    --logo-width: 150px;
+    --content-header-height: 60px;
+    --content-footer-height: 40px;
+}
+
+:root {
+    --toastify-color-light: #fff;
+    --toastify-color-dark: #121212;
+    --toastify-color-info: #3498db;
+    --toastify-color-success: #07bc0c;
+    --toastify-color-warning: #f1c40f;
+    --toastify-color-error: #e74c3c;
+    --toastify-color-transparent: rgba(255, 255, 255, 0.7);
+
+    --toastify-icon-color-info: var(--toastify-color-info);
+    --toastify-icon-color-success: var(--toastify-color-success);
+    --toastify-icon-color-warning: var(--toastify-color-warning);
+    --toastify-icon-color-error: var(--toastify-color-error);
+
+    --toastify-toast-width: 320px;
+    --toastify-toast-background: #fff;
+    --toastify-toast-min-height: 64px;
+    --toastify-toast-max-height: 800px;
+    --toastify-font-family: sans-serif;
+    --toastify-z-index: 9999;
+
+    --toastify-text-color-light: #757575;
+    --toastify-text-color-dark: #fff;
+
+
+    --toastify-text-color-info: #fff;
+    --toastify-text-color-success: #fff;
+    --toastify-text-color-warning: #fff;
+    --toastify-text-color-error: #fff;
+
+    --toastify-spinner-color: #616161;
+    --toastify-spinner-color-empty-area: #e0e0e0;
+
+    --toastify-color-progress-light: linear-gradient(
+        to right,
+        #4cd964,
+        #5ac8fa,
+        #007aff,
+        #34aadc,
+        #5856d6,
+        #ff2d55
+    );
+    --toastify-color-progress-dark: #bb86fc;
+    --toastify-color-progress-info: var(--toastify-color-info);
+    --toastify-color-progress-success: var(--toastify-color-success);
+    --toastify-color-progress-warning: var(--toastify-color-warning);
+    --toastify-color-progress-error: var(--toastify-color-error);
+}
+
+body {
+    box-sizing: border-box;
+    font-family: "Pacifico", sans-serif;
+}
+
+/* Lay-out */
+.App {
+    margin: 0px;
+    display: grid;
+    grid-template-columns: var(--logo-width) 1fr;
+    grid-template-rows: var(--content-header-height) 1fr var(
+            --content-footer-height
+        );
+
+    grid-template-areas:
+        "logo menu"
+        "content content"
+        "footer footer";
+    height: 100vh;
+    background-color: #f5f5f5;
+}
+
+aside.logo {
+    grid-area: logo;
+}
+
+nav.menu {
+    grid-area: menu;
+}
+
+div.content {
+    grid-area: content;
+}
+
+footer.footer {
+    grid-area: footer;
+}
