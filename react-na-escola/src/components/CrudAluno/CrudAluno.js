@@ -10,7 +10,7 @@ import Main from "../template/Main";
 
 const title = "Cadastro de Alunos";
 
-const API_URL = "https://localhost:7229/api/aluno";
+const API_URL = "http://localhost:5147/api/aluno";
 const initialState = {
     aluno: { id: 0, ra: "", nome: "", codCurso: 0 },
     lista: [],

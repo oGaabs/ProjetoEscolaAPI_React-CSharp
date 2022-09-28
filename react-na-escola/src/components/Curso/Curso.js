@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { BsFillPencilFill, BsFillTrash2Fill } from "react-icons/bs";
 import { ToastContainer, toast } from "react-toastify";
@@ -9,99 +8,100 @@ import "./Curso.css";
 
 import Main from "../template/Main";
 
-const title = "Cadastro de Cursos";
-
-const API_URL = "http://localhost:5147/api/curso";
-const initialState = {
-    curso: { id: 0, nome: "", codCurso: 0, periodo: "" },
-    lista: [],
-};
-
-export default class CrudCurso extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { ...initialState };
+export default function Curso(){
+    const initialState = {
+        curso: { id: 0, codCurso: 0, nomeCurso: '', periodo: ''},
+        lista: []
     }
 
-    componentDidMount() {
-        axios(API_URL)
+    const title = "Cadastro de Cursos";
+    const API_URL = "http://localhost:5147/api/curso";
+    const [curso, setCurso] = useState(initialState.curso)
+    const [lista, setLista] = useState(initialState.lista)
+
+    const getDataFromApi = async () => {
+        await axios(API_URL)
             .then((resp) => {
-                this.setState({ lista: resp.data });
-                console.dir(resp)
+                setLista(resp.data);
             })
             .catch((err) => {
                 const errors = (err = err.response?.data?.errors
                     ? Object.values(err.response.data.errors)
                     : err);
-                console.dir(err);
+                console.error(err);
 
                 errors.forEach((err) => {
-                    this.sendErrorPopUp(
+                    sendErrorPopUp(
                         `Falha ao conectar ao banco de dados: \n ${err}`
                     );
                 });
             });
     }
 
-    limpar() {
-        this.setState({ aluno: initialState.curso });
+    useEffect(() => {
+        getDataFromApi()
+    }, [lista])
+    
+    const limpar = () => {
+        setCurso({ curso: initialState.curso })
     }
 
-    salvar() {
-        const curso = this.state.curso;
-        curso.codCurso = Number(curso.codCurso);
+
+    const salvarCurso = () => {
         const metodo = curso.id ? "put" : "post";
         const url = curso.id ? `${API_URL}/${curso.id}` : API_URL;
 
+        curso.codCurso = Number(curso.codCurso);
+
         axios[metodo](url, curso)
             .then((resp) => {
-                const lista = this.getListaAtualizada(resp.data);
+                const lista = getListaAtualizada(resp.data);
 
-                this.setState({ curso: initialState.curso, lista });
-                this.sendSuccessPopUp(`Método ${metodo} efetuado com sucesso!`);
+                setCurso({ curso: initialState.curso, lista })
+                sendSuccessPopUp(`Método ${metodo} efetuado com sucesso!`);
             })
             .catch((err) => {
                 const errors = (err = err.response?.data?.errors
                     ? Object.values(err.response.data.errors)
                     : err);
-                console.dir(err);
+                console.error(err);
 
                 errors.forEach((error) => {
-                    this.sendErrorPopUp(
+                    sendErrorPopUp(
                         `Erro ao efetuar: ${metodo}:\n ${error}`
                     );
                 });
             });
     }
 
-    getListaAtualizada(curso, add = true) {
-        const lista = this.state.lista.filter((a) => a.id !== curso.id);
-        if (add) lista.unshift(curso);
-        return lista;
+    const getListaAtualizada = (curso, add = true) => {
+        const listaNova = lista.filter((a) => a.id !== curso.id);
+        if (add) listaNova.unshift(curso);
+        return listaNova ;
     }
 
-    atualizaCampo(event) {
-        //clonar usuário a partir do state, para não alterar o state diretamente
-        const curso = { ...this.state.curso };
-        //usar o atributo NAME do input identificar o campo a ser atualizado
-        curso[event.target.name] = event.target.value;
-        //atualizar o state
-        this.setState({ curso });
+    const atualizaCampo = event => {
+        const { name, value } = event.target
+
+        setCurso({
+            ...curso,
+            [name]: value
+        })
     }
 
-    carregar(curso) {
-        this.setState({ curso });
+    const atualizarCurso = (curso) => {
+        setCurso(curso)
     }
 
-    remover(aluno) {
-        const url = API_URL + "/" + aluno.id;
-        if (!window.confirm("Confirma remoção do aluno: " + aluno.ra)) return;
+    const removerCurso = (curso) => {
+        const url = API_URL + "/" + curso.id;
+        if (!window.confirm("Confirma remoção do curso: " + curso.nomeCurso)) return;
 
-        axios["delete"](url, aluno)
+        axios['delete'](url, curso)
             .then((resp) => {
-                const lista = this.getListaAtualizada(aluno, false);
-                this.setState({ aluno: initialState.curso, lista });
-                this.sendSuccessPopUp("Aluno removido com sucesso!");
+                const lista = getListaAtualizada(curso, false)
+                setCurso({ curso: initialState.curso, lista })
+                sendSuccessPopUp("Curso removido com sucesso!")
             })
             .catch((err) => {
                 const errors = (err = err.response?.data?.errors
@@ -110,12 +110,12 @@ export default class CrudCurso extends Component {
                 console.dir(err);
 
                 errors.forEach((error) => {
-                    this.sendErrorPopUp(`Erro ao deletar: \n ${error}`);
+                    sendErrorPopUp(`Erro ao deletar: \n ${error}`);
                 });
             });
     }
 
-    sendSuccessPopUp(text) {
+    const sendSuccessPopUp = (text) => {
         toast.success(text, {
             theme: "dark",
             position: "bottom-right",
@@ -128,7 +128,7 @@ export default class CrudCurso extends Component {
         });
     }
 
-    sendErrorPopUp(text) {
+    const sendErrorPopUp = (text) => {
         toast.error(text, {
             theme: "dark",
             position: "bottom-right",
@@ -141,48 +141,49 @@ export default class CrudCurso extends Component {
         });
     }
 
-    renderForm() {
+    const renderForm = () => {
         return (
             <div className="inclui-container">
                 <label> Codigo: </label>
                 <input
                     type="text"
-                    id="ra"
+                    id="codCurso"
                     placeholder="Codigo do curso"
                     className="form-input"
-                    name="ra"
-                    value={this.state.curso.codCurso}
-                    onChange={(e) => this.atualizaCampo(e)}
+                    name="codCurso"
+                    value={curso.codCurso}
+                    onChange={(e) => atualizaCampo(e)}
                 />
                 <label> Nome: </label>
                 <input
                     type="text"
-                    id="nome"
+                    id="nomeCurso"
                     placeholder="Nome do curso"
                     className="form-input"
-                    name="nome"
-                    value={this.state.curso.nome}
-                    onChange={(e) => this.atualizaCampo(e)}
+                    name="nomeCurso"
+                    value={curso.nomeCurso}
+                    onChange={(e) => atualizaCampo(e)}
                 />
                 <label> Periodo: </label>
                 <input
-                    type="number"
-                    id="codCurso"
+                    type="text"
+                    id="periodo"
                     placeholder="0"
                     className="form-input"
-                    name="codCurso"
-                    value={this.state.curso.periodo}
-                    onChange={(e) => this.atualizaCampo(e)}
+                    name="periodo"
+                    value={curso.periodo}
+                    onChange={(e) => atualizaCampo(e)}
                 />
+                <br/>
                 <button
                     className="btn btnSalvar"
-                    onClick={(e) => this.salvar(e)}
+                    onClick={(e) => salvarCurso(e)}
                 >
                     Salvar
                 </button>
                 <button
                     className="btn btnCancelar"
-                    onClick={(e) => this.limpar(e)}
+                    onClick={(e) => limpar(e)}
                 >
                     Cancelar
                 </button>
@@ -190,7 +191,8 @@ export default class CrudCurso extends Component {
         );
     }
 
-    renderTable() {
+
+    const renderTable = () => {
         return (
             <div className="listagem">
                 <table className="listaAlunos styled-table" id="tblListaAlunos">
@@ -203,63 +205,54 @@ export default class CrudCurso extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.lista.map((aluno) => (
-                            <tr key={aluno.id}>
-                                <td>{aluno.codigo}</td>
-                                <td>{aluno.nome}</td>
-                                <td>{aluno.periodo}</td>
-                                <td className="td-buttons">
-                                    <button
-                                        className="btn btn-edit"
-                                        onClick={() => this.carregar(aluno)}
-                                    >
-                                        <BsFillPencilFill /> Alterar
-                                    </button>
-
-                                    <button
-                                        className="btn btn-danger"
-                                        onClick={() => this.remover(aluno)}
-                                    >
-                                        <BsFillTrash2Fill /> Excluir
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
+                        {console.log(lista)}
+                        {
+                            lista.map((curso) => (
+                                    <tr key={curso.id}>
+                                        <td>{curso.codCurso}</td>
+                                        <td>{curso.nomeCurso}</td>
+                                        <td>{curso.periodo}</td>
+                                        <td className="td-buttons">
+                                            <button
+                                                className="btn btn-edit"
+                                                onClick={() => atualizarCurso(curso)}
+                                            >
+                                                <BsFillPencilFill /> Alterar
+                                            </button>
+            
+                                            <button
+                                                className="btn btn-danger"
+                                                onClick={() => removerCurso(curso)}
+                                            >
+                                                <BsFillTrash2Fill /> Excluir
+                                            </button>
+                                        </td>
+                                    </tr>
+                                
+                                ))
+                        }
                     </tbody>
                 </table>
             </div>
         );
     }
 
-    render() {
-        return (
-            <Main title={title}>
-                {this.renderForm()}
-                {this.renderTable()}
-                <ToastContainer
-                    limit={5}
-                    position="bottom-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                />
-            </Main>
-        );
-    }
-}
-
-=======
-
-import NotFound from '../NotFound/NotFound'
-
-export default function Curso(){
     return (
-        <NotFound title='Curso' content='Pagina em construção'/>
-    )
+        <Main title={title}>
+            {renderForm()}
+            {renderTable()}
+            <ToastContainer
+                limit={5}
+                position="bottom-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
+        </Main>
+    );
 }
->>>>>>> 8fb322a6e925b5a1e938b3ae1851a12ff07eb935
