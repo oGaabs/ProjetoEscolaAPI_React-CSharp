@@ -10,7 +10,7 @@ import Main from "../template/Main";
 
 const title = "Cadastro de Alunos";
 
-const API_URL = "https://localhost:7229/api/aluno";
+const API_URL = "http://localhost:5147/api/aluno";
 const initialState = {
     aluno: { id: 0, ra: "", nome: "", codCurso: 0 },
     lista: [],
@@ -206,7 +206,7 @@ export default class CrudAluno extends Component {
                                 <td>{aluno.ra}</td>
                                 <td>{aluno.nome}</td>
                                 <td>{aluno.codCurso}</td>
-                                <td>
+                                <td className="td-buttons">
                                     <button
                                         className="btn btn-edit"
                                         onClick={() => this.carregar(aluno)}
