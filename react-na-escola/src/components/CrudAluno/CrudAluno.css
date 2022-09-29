@@ -34,7 +34,11 @@ td {
 .tabTituloAcoes {
     color: white;
     background-color: rgb(59, 91, 126);
-    width: 50%;
+    align-items: center;
+}
+
+input[type="text"].ra {
+    width: 10%;
 }
 
 input[type="text"] {
@@ -45,9 +49,20 @@ input[type="text"] {
 }
 
 input[type="number"] {
+
     padding: 12px;
-    width: 50px;
+    width: 75px;
 }
+
+select{
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding: 12px;
+}
+
+option{
+    font-size: 12px;
+}
+
 
 .inclui-container {
     margin: 20px;
@@ -62,6 +77,10 @@ input[type="number"] {
 
 label {
     padding: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    font-weight: bolder;
+    font-size: 18px;
 }
 
 .tituloCadastro {
@@ -75,8 +94,9 @@ label {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin: 5px 5px 5px 30px;
+    margin: 5px 5px 5px 5px;
 }
+
 .btnCancelar {
     color: white;
     background-color: rgb(255, 122, 122);
@@ -85,9 +105,12 @@ label {
     border-radius: 4px;
     cursor: pointer;
     margin: 5px;
+
+
 }
 
 .btn {
+    font-family: 'Silkscreen', cursive;
     font-weight: bolder;
     align-items: center;
     min-width: 130px;
@@ -100,7 +123,16 @@ label {
     color: rgb(0, 0, 0);
 
     margin-right: 20px;
+
+    transition: 0.3s ease-in;
+    animation: rotate 2s linear;
 }
+
+.btn:active {
+    background-color: #0400ff;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
 
 .btn-edit {
     color: rgb(64, 115, 255);
@@ -116,4 +148,5 @@ label {
 
     border-left: 0.5px solid #2a2a4e;
 }
+
 

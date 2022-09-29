@@ -34,19 +34,24 @@ td {
 .tabTituloAcoes {
     color: white;
     background-color: rgb(59, 91, 126);
-    width: 50%;
+}
+
+input[type="text"].small  {
+    width: 10%;
+    padding: 12px;
+    width: 50px
 }
 
 input[type="text"] {
     display: inline-block;
-    width: 10%;
+    width: 30%;
     padding: 12px;
     margin: 8px 0;
 }
 
-input[type="number"] {
-    padding: 2px;
-    width: 50px;
+input[type="number"].small {
+    padding: 12px;
+    width: 50px
 }
 
 .inclui-container {
@@ -62,6 +67,10 @@ input[type="number"] {
 
 label {
     padding: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    font-weight: bolder;
+    font-size: 18px;
 }
 
 .tituloCadastro {
@@ -75,8 +84,9 @@ label {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    margin: 5px 5px 5px 30px;
+    margin:5px 5px 5px 5px;
 }
+
 .btnCancelar {
     color: white;
     background-color: rgb(255, 122, 122);
@@ -100,7 +110,16 @@ label {
     color: rgb(0, 0, 0);
 
     margin-right: 20px;
+
+    transition: 0.3s ease-in;
+    animation: rotate 2s linear;
 }
+
+.btn:active {
+    background-color: #0400ff;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+  }
 
 .btn-edit {
     color: rgb(64, 115, 255);

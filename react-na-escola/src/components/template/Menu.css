@@ -1,30 +1,23 @@
-@import url('https://fonts.googleapis.com/css?family=Varela+Round');
+@import url("https://fonts.googleapis.com/css?family=Varela+Round");
 
 nav.menu {
     background-color: var(--bg-menu);
     text-align: right;
+
+    display: flex;
+    align-items: center;
+    justify-content: right;
 }
 
-.menu a{
+.menu a {
     text-decoration: none;
-    color: #E1E1E6;
-    padding: 10px;
-    font-size: 30px;
+    color: #e1e1e6;
+    font-size: 28px;
     padding: 5px;
-    margin-top: 20px;
-
-    /* Pessoal */
-    /*color: white;
-    font-weight: 2000;
-    font-family: 'Varela Round', sans-serif;
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
-
-    text-decoration: none;
-    font-family: Ubuntu;
-    font-size: 1.15em;
-    letter-spacing: 1px;
-    transition: .25s ease-in-out;*/
+    font-family: "Varela Round", sans-serif;
+    margin: 12px;
 }
+
 .menu a:hover {
     color: #538cc6;
 }
