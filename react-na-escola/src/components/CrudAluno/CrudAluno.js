@@ -1,31 +1,54 @@
 import React, { Component } from "react";
+import "./CrudAluno.css";
+import Main from "../template/Main";
 import axios from "axios";
+
 import { BsFillPencilFill, BsFillTrash2Fill } from "react-icons/bs";
 import { ToastContainer, toast } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.min.css";
-import "./CrudAluno.css";
-
-import Main from "../template/Main";
 
 const title = "Cadastro de Alunos";
 
-const API_URL = "http://localhost:5147/api/aluno";
-const initialState = {
+const API_URL_ALUNO = "http://localhost:5147/api/aluno";
+const initialStateAluno = {
     aluno: { id: 0, ra: "", nome: "", codCurso: 0 },
     lista: [],
 };
 
+const API_URL_CURSO = "http://localhost:5147/api/curso"
+const initialStateCurso = {
+    curso: { codCurso: 0, id: 0, nomeCurso: '', periodo: '' },
+    listaCurso: [],
+}
+
 export default class CrudAluno extends Component {
     constructor(props) {
         super(props);
-        this.state = { ...initialState };
+        this.state = { ...initialStateAluno, ...initialStateCurso };
     }
 
     componentDidMount() {
-        axios(API_URL)
+        axios(API_URL_ALUNO)
             .then((resp) => {
                 this.setState({ lista: resp.data });
+            })
+            .catch((err) => {
+                const errors = (err = err.response?.data?.errors
+                    ? Object.values(err.response.data.errors)
+                    : err);
+                console.dir(err);
+
+                errors.forEach((err) => {
+                    this.sendErrorPopUp(
+                        `Falha ao conectar ao banco de dados: \n ${err}`
+                    );
+                });
+            });
+
+        axios(API_URL_CURSO)
+            .then((resp) => {
+                this.setState({ listaCurso: resp.data });
             })
             .catch((err) => {
                 const errors = (err = err.response?.data?.errors
@@ -42,20 +65,20 @@ export default class CrudAluno extends Component {
     }
 
     limpar() {
-        this.setState({ aluno: initialState.aluno });
+        this.setState({ aluno: initialStateAluno.aluno });
     }
 
     salvar() {
-        const aluno = this.state.aluno;
-        aluno.codCurso = Number(aluno.codCurso);
-        const metodo = aluno.id ? "put" : "post";
-        const url = aluno.id ? `${API_URL}/${aluno.id}` : API_URL;
+        const aluno = this.state.aluno
+        aluno.codCurso = Number(this.state.curso.codCurso)
+        const metodo = aluno.id ? "put" : "post"
+        const url = aluno.id ? `${API_URL_ALUNO}/${aluno.id}` : API_URL_ALUNO
 
         axios[metodo](url, aluno)
             .then((resp) => {
                 const lista = this.getListaAtualizada(resp.data);
 
-                this.setState({ aluno: initialState.aluno, lista });
+                this.setState({ aluno: initialStateAluno.aluno, lista });
                 this.sendSuccessPopUp(`Método ${metodo} efetuado com sucesso!`);
             })
             .catch((err) => {
@@ -87,18 +110,24 @@ export default class CrudAluno extends Component {
         this.setState({ aluno });
     }
 
+    atualizaCurso(evento) {
+        const curso = { ...this.state.curso };
+        curso[evento.target.name] = evento.target.value
+        this.setState({ curso })
+    }
+
     carregar(aluno) {
         this.setState({ aluno });
     }
 
     remover(aluno) {
-        const url = API_URL + "/" + aluno.id;
+        const url = API_URL_ALUNO + "/" + aluno.id;
         if (!window.confirm("Confirma remoção do aluno: " + aluno.ra)) return;
 
         axios["delete"](url, aluno)
             .then((resp) => {
                 const lista = this.getListaAtualizada(aluno, false);
-                this.setState({ aluno: initialState.aluno, lista });
+                this.setState({ aluno: initialStateAluno.aluno, lista });
                 this.sendSuccessPopUp("Aluno removido com sucesso!");
             })
             .catch((err) => {
@@ -147,7 +176,7 @@ export default class CrudAluno extends Component {
                     type="text"
                     id="ra"
                     placeholder="RA do aluno"
-                    className="form-input"
+                    className="form-input ra"
                     name="ra"
                     value={this.state.aluno.ra}
                     onChange={(e) => this.atualizaCampo(e)}
@@ -162,8 +191,8 @@ export default class CrudAluno extends Component {
                     value={this.state.aluno.nome}
                     onChange={(e) => this.atualizaCampo(e)}
                 />
-                <label> Código do Curso: </label>
-                <input
+                <label> Curso: </label>
+                {/*<input
                     type="number"
                     id="codCurso"
                     placeholder="0"
@@ -171,7 +200,22 @@ export default class CrudAluno extends Component {
                     name="codCurso"
                     value={this.state.aluno.codCurso}
                     onChange={(e) => this.atualizaCampo(e)}
-                />
+                />*/}
+                <select name="codCurso" onChange={e => { this.atualizaCurso(e)}}>
+                    {this.state.listaCurso.map(
+                        (curso) =>
+                             <option
+                                name="codCurso"
+                                value={curso.codCurso}
+                                >
+                                { curso.nomeCurso }
+                                -
+                                { curso.periodo }
+                            </option>
+
+                    )}
+                </select>
+                <br/>
                 <button
                     className="btn btnSalvar"
                     onClick={(e) => this.salvar(e)}
