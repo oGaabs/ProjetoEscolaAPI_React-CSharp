@@ -16,7 +16,7 @@ namespace ProjetoEscola_API.Models
 
         [Display(Name = "Nome", Description = "Nome do Curso")]
         [Required(ErrorMessage = "O campo Nome é obrigatório.", AllowEmptyStrings = false)]
-        [StringLength(10, ErrorMessage = "O campo Nome não pode ultrapassar {1} caracteres")]
+        [StringLength(30, ErrorMessage = "O campo Nome não pode ultrapassar {1} caracteres")]
         public string? nomeCurso { get; set; }
 
         [Display(Name = "Periodo", Description = "O Periodo deve estar no formato X.")]
