@@ -1,12 +1,38 @@
 import React, { useState, useEffect } from "react";
+import "./Curso.css";
+import Main from "../template/Main";
 import axios from "axios";
+
 import { BsFillPencilFill, BsFillTrash2Fill } from "react-icons/bs";
 import { ToastContainer, toast } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.min.css";
-import "./Curso.css";
 
-import Main from "../template/Main";
+const API_URL = "http://localhost:5147/api/curso";
+const getDataFromApi = async () => {
+    return await axios(API_URL)
+        .then((resp) => resp.data)
+        .catch((err) =>err);
+}
+
+const toastConfig = {
+    theme: "dark",
+    position: "bottom-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+}
+
+const sendSuccessPopUp = (text) => {
+    toast.success(text, toastConfig);
+}
+
+const sendErrorPopUp = (text) => {
+    toast.error(text, toastConfig);
+}
 
 export default function Curso(){
     const initialState = {
@@ -15,33 +41,26 @@ export default function Curso(){
     }
 
     const title = "Cadastro de Cursos";
-    const API_URL = "http://localhost:5147/api/curso";
     const [curso, setCurso] = useState(initialState.curso)
     const [lista, setLista] = useState(initialState.lista)
 
-    const getDataFromApi = async () => {
-        await axios(API_URL)
-            .then((resp) => {
-                setLista(resp.data);
-            })
+    useEffect(() => {
+        getDataFromApi()
+            .then(setLista)
             .catch((err) => {
                 const errors = (err = err.response?.data?.errors
                     ? Object.values(err.response.data.errors)
                     : err);
-                console.error(err);
+                console.log(err)
 
                 errors.forEach((err) => {
                     sendErrorPopUp(
                         `Falha ao conectar ao banco de dados: \n ${err}`
                     );
                 });
-            });
-    }
+            })
+    }, [curso])
 
-    useEffect(() => {
-        getDataFromApi()
-    }, [lista])
-    
     const limpar = () => {
         setCurso({ curso: initialState.curso })
     }
@@ -115,41 +134,15 @@ export default function Curso(){
             });
     }
 
-    const sendSuccessPopUp = (text) => {
-        toast.success(text, {
-            theme: "dark",
-            position: "bottom-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
-    }
-
-    const sendErrorPopUp = (text) => {
-        toast.error(text, {
-            theme: "dark",
-            position: "bottom-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
-    }
-
     const renderForm = () => {
         return (
             <div className="inclui-container">
-                <label> Codigo: </label>
+                <label> Código: </label>
                 <input
                     type="text"
                     id="codCurso"
-                    placeholder="Codigo do curso"
-                    className="form-input"
+                    placeholder="Código do curso"
+                    className="form-input small"
                     name="codCurso"
                     value={curso.codCurso}
                     onChange={(e) => atualizaCampo(e)}
@@ -168,8 +161,8 @@ export default function Curso(){
                 <input
                     type="text"
                     id="periodo"
-                    placeholder="0"
-                    className="form-input"
+                    placeholder="V"
+                    className="form-input small"
                     name="periodo"
                     value={curso.periodo}
                     onChange={(e) => atualizaCampo(e)}
@@ -219,7 +212,7 @@ export default function Curso(){
                                             >
                                                 <BsFillPencilFill /> Alterar
                                             </button>
-            
+
                                             <button
                                                 className="btn btn-danger"
                                                 onClick={() => removerCurso(curso)}
@@ -228,7 +221,7 @@ export default function Curso(){
                                             </button>
                                         </td>
                                     </tr>
-                                
+
                                 ))
                         }
                     </tbody>
