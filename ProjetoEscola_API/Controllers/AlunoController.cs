@@ -54,7 +54,7 @@ namespace ProjetoEscola_API.Controllers
                 if (await _context.SaveChangesAsync() == 1)
                 {
                     //return Ok();
-                    return Created($"/api/aluno/{model.ra}",model);
+                    return Created($"/api/aluno/{model.ra}", model);
                 }
 
             }
@@ -62,8 +62,8 @@ namespace ProjetoEscola_API.Controllers
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
-        // retorna BadRequest se não conseguiu incluir
-        return BadRequest();
+            // retorna BadRequest se não conseguiu incluir
+            return BadRequest();
         }
 
         [HttpPut("{AlunoId}")]
@@ -77,15 +77,15 @@ namespace ProjetoEscola_API.Controllers
                 {
                     return BadRequest();
                 }
-            result.ra = dadosAlunoAlt.ra;
-            result.nome = dadosAlunoAlt.nome;
-            result.codCurso = dadosAlunoAlt.codCurso;
-            await _context.SaveChangesAsync();
-            return Created($"/api/aluno/{dadosAlunoAlt.ra}", dadosAlunoAlt);
+                result.ra = dadosAlunoAlt.ra;
+                result.nome = dadosAlunoAlt.nome;
+                result.codCurso = dadosAlunoAlt.codCurso;
+                await _context.SaveChangesAsync();
+                return Created($"/api/aluno/{dadosAlunoAlt.ra}", dadosAlunoAlt);
             }
             catch
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,"Falha no acesso ao banco de dados.");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
         }
 
@@ -101,13 +101,13 @@ namespace ProjetoEscola_API.Controllers
                     //método do EF
                     return NotFound();
                 }
-            _context.Remove(aluno);
-            await _context.SaveChangesAsync();
-            return NoContent();
+                _context.Remove(aluno);
+                await _context.SaveChangesAsync();
+                return NoContent();
             }
             catch
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,"Falha no acesso ao banco de dados.");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
         }
     }

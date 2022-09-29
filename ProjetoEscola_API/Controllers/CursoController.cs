@@ -54,7 +54,7 @@ namespace ProjetoEscola_API.Controllers
                 if (await _context.SaveChangesAsync() == 1)
                 {
                     //return Ok();
-                    return Created($"/api/curso/{model.codCurso}",model);
+                    return Created($"/api/curso/{model.codCurso}", model);
                 }
 
             }
@@ -62,8 +62,8 @@ namespace ProjetoEscola_API.Controllers
             {
                 return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
-        // retorna BadRequest se não conseguiu incluir
-        return BadRequest();
+            // retorna BadRequest se não conseguiu incluir
+            return BadRequest();
         }
 
         [HttpPut("{CursoId}")]
@@ -86,7 +86,7 @@ namespace ProjetoEscola_API.Controllers
             }
             catch
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,"Falha no acesso ao banco de dados.");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
         }
 
@@ -102,13 +102,13 @@ namespace ProjetoEscola_API.Controllers
                     //método do EF
                     return NotFound();
                 }
-            _context.Remove(curso);
-            await _context.SaveChangesAsync();
-            return NoContent();
+                _context.Remove(curso);
+                await _context.SaveChangesAsync();
+                return NoContent();
             }
             catch
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError,"Falha no acesso ao banco de dados.");
+                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
             }
         }
     }
