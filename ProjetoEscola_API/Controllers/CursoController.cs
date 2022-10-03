@@ -34,9 +34,7 @@ namespace ProjetoEscola_API.Controllers
             {
                 var result = _context.Curso.Find(CursoId);
                 if (result == null)
-                {
                     return NotFound();
-                }
                 return Ok(result);
             }
             catch
@@ -74,9 +72,8 @@ namespace ProjetoEscola_API.Controllers
                 //verifica se existe curso a ser alterado
                 var result = await _context.Curso.FindAsync(CursoId);
                 if (CursoId != result.id)
-                {
                     return BadRequest();
-                }
+                
                 result.codCurso = dadosCursoAlt.codCurso;
                 result.nomeCurso = dadosCursoAlt.nomeCurso;
                 result.periodo = dadosCursoAlt.periodo;

@@ -8,7 +8,6 @@ namespace ProjetoEscola_API.Models
         [Display(Name = "Código", Description = "Informe um inteiro entre 1 e 99999.")]
         public int id { get; set; }
 
-
         [Display(Name = "Código do Curso", Description = "O Código do Curso que o aluno está cursando.")]
         [Required(ErrorMessage = "O campo CodCurso é obrigatório.")]
         [Range(1, 99, ErrorMessage = "Digite o {0} sendo um número entre {1}-{2}.")]
