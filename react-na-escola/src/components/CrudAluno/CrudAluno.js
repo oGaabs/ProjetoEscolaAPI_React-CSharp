@@ -4,28 +4,62 @@ import Main from "../template/Main";
 import axios from "axios";
 
 import { BsFillPencilFill, BsFillTrash2Fill } from "react-icons/bs";
-import { ToastContainer, toast } from "react-toastify";
 
+/*
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
+
+const toastConfig = {
+    theme: "dark",
+    position: "bottom-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+}*/
+
+const sendSuccessPopUp = (text) => {
+    //toast.success(text, toastConfig);
+}
+
+/*const sendErrorPopUp = (text) => {
+    //toast.error(text, toastConfig);
+}*/
+
+const sendMultipleErrorPopUp = (err) => {
+    /*
+    let errors;
+    try {
+        errors = (err = err.response?.data?.errors
+            ? Object.values(err.response.data.errors)
+            : err);
+    } catch (err) {
+        errors = [err]
+    }
+
+    errors.forEach((err) => {
+        sendErrorPopUp(
+            `Falha ao conectar ao banco de dados: \n ${err}`
+        );
+    });*/
+}
 
 const title = "Cadastro de Alunos";
 
 const API_URL_ALUNO = "http://localhost:5147/api/aluno";
-const initialStateAluno = {
+const API_URL_CURSO = "http://localhost:5147/api/curso"
+const initialState = {
     aluno: { id: 0, ra: "", nome: "", codCurso: 0 },
     lista: [],
+    listaCurso: []
 };
-
-const API_URL_CURSO = "http://localhost:5147/api/curso"
-const initialStateCurso = {
-    curso: { codCurso: 0, id: 0, nomeCurso: '', periodo: '' },
-    listaCurso: [],
-}
 
 export default class CrudAluno extends Component {
     constructor(props) {
         super(props);
-        this.state = { ...initialStateAluno, ...initialStateCurso };
+        this.state = { ...initialState};
     }
 
     componentDidMount() {
@@ -34,16 +68,9 @@ export default class CrudAluno extends Component {
                 this.setState({ lista: resp.data });
             })
             .catch((err) => {
-                const errors = (err = err.response?.data?.errors
-                    ? Object.values(err.response.data.errors)
-                    : err);
                 console.dir(err);
 
-                errors.forEach((err) => {
-                    this.sendErrorPopUp(
-                        `Falha ao conectar ao banco de dados: \n ${err}`
-                    );
-                });
+                sendMultipleErrorPopUp(err)
             });
 
         axios(API_URL_CURSO)
@@ -51,26 +78,18 @@ export default class CrudAluno extends Component {
                 this.setState({ listaCurso: resp.data });
             })
             .catch((err) => {
-                const errors = (err = err.response?.data?.errors
-                    ? Object.values(err.response.data.errors)
-                    : err);
                 console.dir(err);
 
-                errors.forEach((err) => {
-                    this.sendErrorPopUp(
-                        `Falha ao conectar ao banco de dados: \n ${err}`
-                    );
-                });
+                sendMultipleErrorPopUp(err)
             });
     }
 
     limpar() {
-        this.setState({ aluno: initialStateAluno.aluno });
+        this.setState({ aluno: initialState.aluno });
     }
 
     salvar() {
         const aluno = this.state.aluno
-        aluno.codCurso = Number(this.state.curso.codCurso)
         const metodo = aluno.id ? "put" : "post"
         const url = aluno.id ? `${API_URL_ALUNO}/${aluno.id}` : API_URL_ALUNO
 
@@ -78,20 +97,13 @@ export default class CrudAluno extends Component {
             .then((resp) => {
                 const lista = this.getListaAtualizada(resp.data);
 
-                this.setState({ aluno: initialStateAluno.aluno, lista });
-                this.sendSuccessPopUp(`Método ${metodo} efetuado com sucesso!`);
+                this.setState({ aluno: initialState.aluno, lista });
+                sendSuccessPopUp(`Método ${metodo} efetuado com sucesso!`);
             })
             .catch((err) => {
-                const errors = (err = err.response?.data?.errors
-                    ? Object.values(err.response.data.errors)
-                    : err);
                 console.dir(err);
 
-                errors.forEach((error) => {
-                    this.sendErrorPopUp(
-                        `Erro ao efetuar: ${metodo}:\n ${error}`
-                    );
-                });
+                sendMultipleErrorPopUp(err)
             });
     }
 
@@ -110,10 +122,10 @@ export default class CrudAluno extends Component {
         this.setState({ aluno });
     }
 
-    atualizaCurso(evento) {
-        const curso = { ...this.state.curso };
-        curso[evento.target.name] = evento.target.value
-        this.setState({ curso })
+    atualizaCurso(event) {
+        const aluno = { ...this.state.aluno };
+        aluno.codCurso = Number(event.target.value);
+        this.setState({ aluno })
     }
 
     carregar(aluno) {
@@ -127,45 +139,14 @@ export default class CrudAluno extends Component {
         axios["delete"](url, aluno)
             .then((resp) => {
                 const lista = this.getListaAtualizada(aluno, false);
-                this.setState({ aluno: initialStateAluno.aluno, lista });
-                this.sendSuccessPopUp("Aluno removido com sucesso!");
+                this.setState({ aluno: initialState.aluno, lista });
+                sendSuccessPopUp("Aluno removido com sucesso!");
             })
             .catch((err) => {
-                const errors = (err = err.response?.data?.errors
-                    ? Object.values(err.response.data.errors)
-                    : err);
                 console.dir(err);
 
-                errors.forEach((error) => {
-                    this.sendErrorPopUp(`Erro ao deletar: \n ${error}`);
-                });
+                sendMultipleErrorPopUp(err)
             });
-    }
-
-    sendSuccessPopUp(text) {
-        toast.success(text, {
-            theme: "dark",
-            position: "bottom-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
-    }
-
-    sendErrorPopUp(text) {
-        toast.error(text, {
-            theme: "dark",
-            position: "bottom-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        });
     }
 
     renderForm() {
@@ -192,15 +173,6 @@ export default class CrudAluno extends Component {
                     onChange={(e) => this.atualizaCampo(e)}
                 />
                 <label> Curso: </label>
-                {/*<input
-                    type="number"
-                    id="codCurso"
-                    placeholder="0"
-                    className="form-input"
-                    name="codCurso"
-                    value={this.state.aluno.codCurso}
-                    onChange={(e) => this.atualizaCampo(e)}
-                />*/}
                 <select name="codCurso" onChange={e => { this.atualizaCurso(e)}}>
                     {this.state.listaCurso.map(
                         (curso) =>
@@ -245,7 +217,7 @@ export default class CrudAluno extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {this.state.lista.map((aluno) => (
+                        {Array.isArray(this.state.lista) ? this.state.lista.map((aluno) => (
                             <tr key={aluno.id}>
                                 <td>{aluno.ra}</td>
                                 <td>{aluno.nome}</td>
@@ -266,7 +238,7 @@ export default class CrudAluno extends Component {
                                     </button>
                                 </td>
                             </tr>
-                        ))}
+                        )) : null}
                     </tbody>
                 </table>
             </div>
@@ -278,6 +250,7 @@ export default class CrudAluno extends Component {
             <Main title={title}>
                 {this.renderForm()}
                 {this.renderTable()}
+                {/*
                 <ToastContainer
                     limit={5}
                     position="bottom-right"
@@ -289,7 +262,7 @@ export default class CrudAluno extends Component {
                     pauseOnFocusLoss
                     draggable
                     pauseOnHover
-                />
+                />*/}
             </Main>
         );
     }

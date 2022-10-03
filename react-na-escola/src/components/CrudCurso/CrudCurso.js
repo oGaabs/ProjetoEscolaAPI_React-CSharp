@@ -1,19 +1,12 @@
 import React, { useState, useEffect } from "react";
-import "./Curso.css";
+import "../CrudCurso/CrudCurso.css";
 import Main from "../template/Main";
 import axios from "axios";
 
 import { BsFillPencilFill, BsFillTrash2Fill } from "react-icons/bs";
+/*
 import { ToastContainer, toast } from "react-toastify";
-
 import "react-toastify/dist/ReactToastify.min.css";
-
-const API_URL = "http://localhost:5147/api/curso";
-const getDataFromApi = async () => {
-    return await axios(API_URL)
-        .then((resp) => resp.data)
-        .catch((err) =>err);
-}
 
 const toastConfig = {
     theme: "dark",
@@ -24,17 +17,42 @@ const toastConfig = {
     pauseOnHover: true,
     draggable: true,
     progress: undefined,
-}
+}*/
 
 const sendSuccessPopUp = (text) => {
-    toast.success(text, toastConfig);
+    //toast.success(text, toastConfig);
 }
 
-const sendErrorPopUp = (text) => {
-    toast.error(text, toastConfig);
+/*const sendErrorPopUp = (text) => {
+    //toast.error(text, toastConfig);
+}*/
+
+const sendMultipleErrorPopUp = (err) => {
+    /*
+    let errors;
+    try {
+        errors = (err = err.response?.data?.errors
+            ? Object.values(err.response.data.errors)
+            : err);
+    } catch (err) {
+        errors = [err]
+    }
+
+    errors.forEach((err) => {
+        sendErrorPopUp(
+            `Falha ao conectar ao banco de dados: \n ${err}`
+        );
+    });*/
 }
 
-export default function Curso(){
+const API_URL = "http://localhost:5147/api/curso";
+const getDataFromApi = async () => {
+    return await axios(API_URL)
+        .then((resp) => resp.data)
+        .catch((err) =>err);
+}
+
+export default function CrudCurso(){
     const initialState = {
         curso: { id: 0, codCurso: 0, nomeCurso: '', periodo: ''},
         lista: []
@@ -48,24 +66,14 @@ export default function Curso(){
         getDataFromApi()
             .then(setLista)
             .catch((err) => {
-                const errors = (err = err.response?.data?.errors
-                    ? Object.values(err.response.data.errors)
-                    : err);
                 console.log(err)
 
-                errors.forEach((err) => {
-                    sendErrorPopUp(
-                        `Falha ao conectar ao banco de dados: \n ${err}`
-                    );
-                });
+                sendMultipleErrorPopUp(err)
             })
     }, [curso])
 
-    const limpar = () => {
-        setCurso({ curso: initialState.curso })
-    }
-
-
+    const limparCurso = () => setCurso({ curso: initialState.curso })
+    
     const salvarCurso = () => {
         const metodo = curso.id ? "put" : "post";
         const url = curso.id ? `${API_URL}/${curso.id}` : API_URL;
@@ -74,22 +82,15 @@ export default function Curso(){
 
         axios[metodo](url, curso)
             .then((resp) => {
-                const lista = getListaAtualizada(resp.data);
+                const lista = getListaAtualizada(resp.data)
 
                 setCurso({ curso: initialState.curso, lista })
-                sendSuccessPopUp(`Método ${metodo} efetuado com sucesso!`);
+                sendSuccessPopUp(`Método ${metodo} efetuado com sucesso!`)
             })
             .catch((err) => {
-                const errors = (err = err.response?.data?.errors
-                    ? Object.values(err.response.data.errors)
-                    : err);
-                console.error(err);
+                console.error(err)
 
-                errors.forEach((error) => {
-                    sendErrorPopUp(
-                        `Erro ao efetuar: ${metodo}:\n ${error}`
-                    );
-                });
+                sendMultipleErrorPopUp(err)
             });
     }
 
@@ -108,29 +109,23 @@ export default function Curso(){
         })
     }
 
-    const atualizarCurso = (curso) => {
-        setCurso(curso)
-    }
+    const atualizarCurso = (curso) => setCurso(curso)
+    
 
     const removerCurso = (curso) => {
         const url = API_URL + "/" + curso.id;
         if (!window.confirm("Confirma remoção do curso: " + curso.nomeCurso)) return;
 
         axios['delete'](url, curso)
-            .then((resp) => {
+            .then((_resp) => {
                 const lista = getListaAtualizada(curso, false)
                 setCurso({ curso: initialState.curso, lista })
                 sendSuccessPopUp("Curso removido com sucesso!")
             })
             .catch((err) => {
-                const errors = (err = err.response?.data?.errors
-                    ? Object.values(err.response.data.errors)
-                    : err);
-                console.dir(err);
+                console.dir(err)
 
-                errors.forEach((error) => {
-                    sendErrorPopUp(`Erro ao deletar: \n ${error}`);
-                });
+                sendMultipleErrorPopUp(err)
             });
     }
 
@@ -176,7 +171,7 @@ export default function Curso(){
                 </button>
                 <button
                     className="btn btnCancelar"
-                    onClick={(e) => limpar(e)}
+                    onClick={(e) => limparCurso(e)}
                 >
                     Cancelar
                 </button>
@@ -198,9 +193,9 @@ export default function Curso(){
                         </tr>
                     </thead>
                     <tbody>
-                        {console.log(lista)}
                         {
-                            lista.map((curso) => (
+                            (Array.isArray(lista))
+                            ? lista.map((curso) => (
                                     <tr key={curso.id}>
                                         <td>{curso.codCurso}</td>
                                         <td>{curso.nomeCurso}</td>
@@ -222,7 +217,8 @@ export default function Curso(){
                                         </td>
                                     </tr>
 
-                                ))
+                                )) : null
+                            
                         }
                     </tbody>
                 </table>
@@ -234,6 +230,7 @@ export default function Curso(){
         <Main title={title}>
             {renderForm()}
             {renderTable()}
+            {/*
             <ToastContainer
                 limit={5}
                 position="bottom-right"
@@ -245,7 +242,7 @@ export default function Curso(){
                 pauseOnFocusLoss
                 draggable
                 pauseOnHover
-            />
+            />*/}
         </Main>
     );
 }
