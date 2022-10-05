@@ -72,7 +72,7 @@ export default function CrudCurso(){
             })
     }, [curso])
 
-    const limparCurso = () => setCurso({ curso: initialState.curso })
+    const limparCurso = () => setCurso(initialState.curso)
     
     const salvarCurso = () => {
         const metodo = curso.id ? "put" : "post";
@@ -84,7 +84,8 @@ export default function CrudCurso(){
             .then((resp) => {
                 const lista = getListaAtualizada(resp.data)
 
-                setCurso({ curso: initialState.curso, lista })
+                setCurso(initialState.curso)
+                setLista(lista)
                 sendSuccessPopUp(`Método ${metodo} efetuado com sucesso!`)
             })
             .catch((err) => {
@@ -119,7 +120,8 @@ export default function CrudCurso(){
         axios['delete'](url, curso)
             .then((_resp) => {
                 const lista = getListaAtualizada(curso, false)
-                setCurso({ curso: initialState.curso, lista })
+                setCurso(initialState.curso)
+                setLista(lista)
                 sendSuccessPopUp("Curso removido com sucesso!")
             })
             .catch((err) => {
