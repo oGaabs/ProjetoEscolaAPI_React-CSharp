@@ -24,10 +24,6 @@ const sendSuccessPopUp = (text) => {
     //toast.success(text, toastConfig);
 }
 
-/*const sendErrorPopUp = (text) => {
-    //toast.error(text, toastConfig);
-}*/
-
 const sendMultipleErrorPopUp = (err) => {
     /*
     let errors;
@@ -51,7 +47,7 @@ const title = "Cadastro de Alunos";
 const API_URL_ALUNO = "http://localhost:5147/api/aluno";
 const API_URL_CURSO = "http://localhost:5147/api/curso"
 const initialState = {
-    aluno: { id: 0, ra: "", nome: "", codCurso: 0 },
+    aluno: { id: 0, ra: "", nome: "", codCurso: "" },
     lista: [],
     listaCurso: []
 };
@@ -129,7 +125,7 @@ export default class CrudAluno extends Component {
     }
 
     carregar(aluno) {
-        this.setState({ aluno });
+        this.setState({ aluno })
     }
 
     remover(aluno) {
@@ -137,7 +133,7 @@ export default class CrudAluno extends Component {
         if (!window.confirm("Confirma remoção do aluno: " + aluno.ra)) return;
 
         axios["delete"](url, aluno)
-            .then((resp) => {
+            .then((_resp) => {
                 const lista = this.getListaAtualizada(aluno, false);
                 this.setState({ aluno: initialState.aluno, lista });
                 sendSuccessPopUp("Aluno removido com sucesso!");
@@ -173,18 +169,12 @@ export default class CrudAluno extends Component {
                     onChange={(e) => this.atualizaCampo(e)}
                 />
                 <label> Curso: </label>
-                <select name="codCurso" onChange={e => { this.atualizaCurso(e)}}>
-                    {this.state.listaCurso.map(
-                        (curso) =>
-                             <option
-                                name="codCurso"
-                                value={curso.codCurso}
-                                >
-                                { curso.nomeCurso }
-                                -
-                                { curso.periodo }
+                <select name="codCurso" value={this.state.aluno.codCurso}  onChange={e => { this.atualizaCurso(e)}} required>
+                    <option disabled={true} key="" value="">  -- Escolha uma opção -- </option>
+                    {this.state.listaCurso.map( (curso) =>
+                            <option  key={curso.id} name="codCurso" value={curso.codCurso}>
+                                { curso.codCurso } - { curso.nomeCurso } : { curso.periodo }
                             </option>
-
                     )}
                 </select>
                 <br/>

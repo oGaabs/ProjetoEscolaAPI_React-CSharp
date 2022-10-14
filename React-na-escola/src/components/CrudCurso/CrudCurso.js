@@ -21,11 +21,7 @@ const toastConfig = {
 
 const sendSuccessPopUp = (text) => {
     //toast.success(text, toastConfig);
-}
-
-/*const sendErrorPopUp = (text) => {
-    //toast.error(text, toastConfig);
-}*/
+};
 
 const sendMultipleErrorPopUp = (err) => {
     /*
@@ -43,37 +39,37 @@ const sendMultipleErrorPopUp = (err) => {
             `Falha ao conectar ao banco de dados: \n ${err}`
         );
     });*/
-}
+};
 
 const API_URL = "http://localhost:5147/api/curso";
 const getDataFromApi = async () => {
     return await axios(API_URL)
         .then((resp) => resp.data)
-        .catch((err) =>err);
-}
+        .catch((err) => err);
+};
 
-export default function CrudCurso(){
+export default function CrudCurso() {
     const initialState = {
-        curso: { id: 0, codCurso: 0, nomeCurso: '', periodo: ''},
-        lista: []
-    }
+        curso: { id: 0, codCurso: 0, nomeCurso: "", periodo: "" },
+        lista: [],
+    };
 
     const title = "Cadastro de Cursos";
-    const [curso, setCurso] = useState(initialState.curso)
-    const [lista, setLista] = useState(initialState.lista)
+    const [curso, setCurso] = useState(initialState.curso);
+    const [lista, setLista] = useState(initialState.lista);
 
     useEffect(() => {
         getDataFromApi()
             .then(setLista)
             .catch((err) => {
-                console.log(err)
+                console.log(err);
 
-                sendMultipleErrorPopUp(err)
-            })
-    }, [curso])
+                sendMultipleErrorPopUp(err);
+            });
+    }, [curso]);
 
-    const limparCurso = () => setCurso(initialState.curso)
-    
+    const limparCurso = () => setCurso(initialState.curso);
+
     const salvarCurso = () => {
         const metodo = curso.id ? "put" : "post";
         const url = curso.id ? `${API_URL}/${curso.id}` : API_URL;
@@ -82,54 +78,54 @@ export default function CrudCurso(){
 
         axios[metodo](url, curso)
             .then((resp) => {
-                const lista = getListaAtualizada(resp.data)
+                const lista = getListaAtualizada(resp.data);
 
-                setCurso(initialState.curso)
-                setLista(lista)
-                sendSuccessPopUp(`Método ${metodo} efetuado com sucesso!`)
+                setCurso(initialState.curso);
+                setLista(lista);
+                sendSuccessPopUp(`Método ${metodo} efetuado com sucesso!`);
             })
             .catch((err) => {
-                console.error(err)
+                console.error(err);
 
-                sendMultipleErrorPopUp(err)
+                sendMultipleErrorPopUp(err);
             });
-    }
+    };
 
     const getListaAtualizada = (curso, add = true) => {
         const listaNova = lista.filter((a) => a.id !== curso.id);
         if (add) listaNova.unshift(curso);
-        return listaNova ;
-    }
+        return listaNova;
+    };
 
-    const atualizaCampo = event => {
-        const { name, value } = event.target
+    const atualizaCampo = (event) => {
+        const { name, value } = event.target;
 
         setCurso({
             ...curso,
-            [name]: value
-        })
-    }
+            [name]: value,
+        });
+    };
 
-    const atualizarCurso = (curso) => setCurso(curso)
-    
+    const atualizarCurso = (curso) => setCurso(curso);
 
     const removerCurso = (curso) => {
         const url = API_URL + "/" + curso.id;
-        if (!window.confirm("Confirma remoção do curso: " + curso.nomeCurso)) return;
+        if (!window.confirm("Confirma remoção do curso: " + curso.nomeCurso))
+            return;
 
-        axios['delete'](url, curso)
+        axios["delete"](url, curso)
             .then((_resp) => {
-                const lista = getListaAtualizada(curso, false)
-                setCurso(initialState.curso)
-                setLista(lista)
-                sendSuccessPopUp("Curso removido com sucesso!")
+                const lista = getListaAtualizada(curso, false);
+                setCurso(initialState.curso);
+                setLista(lista);
+                sendSuccessPopUp("Curso removido com sucesso!");
             })
             .catch((err) => {
-                console.dir(err)
+                console.dir(err);
 
-                sendMultipleErrorPopUp(err)
+                sendMultipleErrorPopUp(err);
             });
-    }
+    };
 
     const renderForm = () => {
         return (
@@ -164,7 +160,7 @@ export default function CrudCurso(){
                     value={curso.periodo}
                     onChange={(e) => atualizaCampo(e)}
                 />
-                <br/>
+                <br />
                 <button
                     className="btn btnSalvar"
                     onClick={(e) => salvarCurso(e)}
@@ -179,8 +175,7 @@ export default function CrudCurso(){
                 </button>
             </div>
         );
-    }
-
+    };
 
     const renderTable = () => {
         return (
@@ -195,38 +190,39 @@ export default function CrudCurso(){
                         </tr>
                     </thead>
                     <tbody>
-                        {
-                            (Array.isArray(lista))
+                        {Array.isArray(lista)
                             ? lista.map((curso) => (
-                                    <tr key={curso.id}>
-                                        <td>{curso.codCurso}</td>
-                                        <td>{curso.nomeCurso}</td>
-                                        <td>{curso.periodo}</td>
-                                        <td className="td-buttons">
-                                            <button
-                                                className="btn btn-edit"
-                                                onClick={() => atualizarCurso(curso)}
-                                            >
-                                                <BsFillPencilFill /> Alterar
-                                            </button>
+                                  <tr key={curso.id}>
+                                      <td>{curso.codCurso}</td>
+                                      <td>{curso.nomeCurso}</td>
+                                      <td>{curso.periodo}</td>
+                                      <td className="td-buttons">
+                                          <button
+                                              className="btn btn-edit"
+                                              onClick={() =>
+                                                  atualizarCurso(curso)
+                                              }
+                                          >
+                                              <BsFillPencilFill /> Alterar
+                                          </button>
 
-                                            <button
-                                                className="btn btn-danger"
-                                                onClick={() => removerCurso(curso)}
-                                            >
-                                                <BsFillTrash2Fill /> Excluir
-                                            </button>
-                                        </td>
-                                    </tr>
-
-                                )) : null
-                            
-                        }
+                                          <button
+                                              className="btn btn-danger"
+                                              onClick={() =>
+                                                  removerCurso(curso)
+                                              }
+                                          >
+                                              <BsFillTrash2Fill /> Excluir
+                                          </button>
+                                      </td>
+                                  </tr>
+                              ))
+                            : null}
                     </tbody>
                 </table>
             </div>
         );
-    }
+    };
 
     return (
         <Main title={title}>
