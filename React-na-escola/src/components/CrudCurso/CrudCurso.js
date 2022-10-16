@@ -192,31 +192,31 @@ export default function CrudCurso() {
                     <tbody>
                         {Array.isArray(lista)
                             ? lista.map((curso) => (
-                                  <tr key={curso.id}>
-                                      <td>{curso.codCurso}</td>
-                                      <td>{curso.nomeCurso}</td>
-                                      <td>{curso.periodo}</td>
-                                      <td className="td-buttons">
-                                          <button
-                                              className="btn btn-edit"
-                                              onClick={() =>
-                                                  atualizarCurso(curso)
-                                              }
-                                          >
-                                              <BsFillPencilFill /> Alterar
-                                          </button>
+                                <tr key={curso.id}>
+                                    <td>{curso.codCurso}</td>
+                                    <td>{curso.nomeCurso}</td>
+                                    <td>{curso.periodo}</td>
+                                    <td className="td-buttons">
+                                        <button
+                                            className="btn btn-edit"
+                                            onClick={() =>
+                                                atualizarCurso(curso)
+                                            }
+                                        >
+                                            <BsFillPencilFill /> Alterar
+                                        </button>
 
-                                          <button
-                                              className="btn btn-danger"
-                                              onClick={() =>
-                                                  removerCurso(curso)
-                                              }
-                                          >
-                                              <BsFillTrash2Fill /> Excluir
-                                          </button>
-                                      </td>
-                                  </tr>
-                              ))
+                                        <button
+                                            className="btn btn-danger"
+                                            onClick={() =>
+                                                removerCurso(curso)
+                                            }
+                                        >
+                                            <BsFillTrash2Fill /> Excluir
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
                             : null}
                     </tbody>
                 </table>
