@@ -17,7 +17,7 @@ namespace ProjetoEscola_API.Models
         [Display(Name = "Nome Completo", Description = "Nome e Sobrenome.")]
         [Required(ErrorMessage = "O campo Nome é obrigatório.", AllowEmptyStrings = false)]
         [StringLength(30, ErrorMessage = "O campo Nome não pode ultrapassar {1} caracteres")]
-        [RegularExpression(@"^[a-zA-Z''-'\s]{1,40}$", ErrorMessage="Números e caracteres especiais não são permitidos no nome.")]
+        [RegularExpression(@"^[a-zA-Z.à-úÀ-Ú''-'\s]{1,40}$", ErrorMessage = "Números e caracteres especiais não são permitidos no nome.")]
         public string? nome { get; set; }
 
         [Display(Name = "Código do Curso", Description = "O Código do Curso que o aluno está cursando.")]
