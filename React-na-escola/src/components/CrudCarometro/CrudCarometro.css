@@ -1,0 +1,161 @@
+@import url("https://fonts.googleapis.com/css2?family=Baloo+Paaji+2:wght@400;500&display=swap");
+
+div.carometro {
+    width: 80%;
+    height: 80%;
+    margin: auto;
+    grid-area: content;
+}
+
+div.carometro > main > div > div {
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.select-container {
+  color: white;
+  margin: 20px 20px 20px 0px;
+  border-radius: 20px;
+  background-color: #211d2c;
+  padding: 8px 0px 8px 6px;
+
+  width: 25%;
+  border: 1.5px solid #bddff7;
+  border-collapse: collapse;
+}
+
+.selectCarometro{
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 5px 15px 5px 10px;
+}
+
+select .selectCarometro option{
+  font-size: 12px;
+}
+
+.card-container {
+    max-width: 100%;
+    margin: 0 auto;
+
+    padding: 10px 0 0 5px;
+    background-color: transparent;
+    box-shadow: none;
+    border: 0;
+}
+
+.card-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+}
+
+.card {
+    flex: 1 1 21rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 10px 20px;
+    padding: 10px 20px;
+
+    align-self: normal;
+    font-family: "Baloo Paaji 2", cursive;
+    background-color: #1e1e26;
+    max-width: 15%;
+
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.card-title {
+    text-transform: uppercase;
+
+    flex-wrap: wrap;
+    font-size: 1.2rem;
+    margin: 10px 0 15px;
+    max-width: 100%;
+    text-align: center;
+}
+
+.card-description {
+    margin-bottom: 10px;
+}
+
+.card__image {
+    height: 160px;
+    max-height: 160px;
+    width: 160px;
+    border-radius: 50%;
+    border: 5px solid #272133;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    box-shadow: 0 7px 25px rgb(57, 166, 230);
+}
+
+.draw-border {
+
+  display: flex;
+    box-shadow: inset 0 0 0 3px #58d1b7;
+    color: #58afd1;
+    -webkit-transition: color 0.25s 0.0833333333s;
+    transition: color 0.25s 0.0833333333s;
+    position: relative;
+}
+
+.draw-border::before,
+.draw-border::after {
+    border: 0 solid transparent;
+    box-sizing: border-box;
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    width: 0rem;
+    height: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.draw-border::before {
+    border-bottom-width: 4px;
+    border-left-width: 4px;
+}
+
+.draw-border::after {
+    border-top-width: 4px;
+    border-right-width: 4px;
+}
+
+.draw-border:hover {
+    color: rgb(241, 213, 50);
+}
+
+.draw-border:hover .card__image {
+    box-shadow: 0 7px 25px rgb(230, 57, 115);
+}
+
+.draw-border:hover::before,
+.draw-border:hover::after {
+    border-color: gold;
+    -webkit-transition: border-color 0s, width 0.25s, height 0.25s;
+    transition: border-color 0s, width 0.25s, height 0.25s;
+    width: 100%;
+    height: 100%;
+}
+
+.draw-border:hover::before {
+    -webkit-transition-delay: 0s, 0s, 0.25s;
+    transition-delay: 0s, 0s, 0.25s;
+}
+
+.draw-border:hover::after {
+    -webkit-transition-delay: 0s, 0.25s, 0s;
+    transition-delay: 0s, 0.25s, 0s;
+}

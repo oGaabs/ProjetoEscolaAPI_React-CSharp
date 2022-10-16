@@ -4,7 +4,7 @@ import Main from './components/template/Main';
 import CrudAluno from './components/CrudAluno/CrudAluno';
 import NotFound from './components/NotFound/NotFound'
 import CrudCurso from './components/CrudCurso/CrudCurso'
-import Carometro from './components/Carometro/Carometro'
+import CrudCarometro from './components/CrudCarometro/CrudCarometro'
 
 export default function Rotas() {
     return (
@@ -17,7 +17,7 @@ export default function Rotas() {
             />
             <Route path='/alunos' element={<CrudAluno/>} />
             <Route path="/cursos" element={<CrudCurso/>} />
-            <Route path="/carometro" element={<Carometro/>} />
+            <Route path="/carometro" element={<CrudCarometro/>} />
 
             <Route /*Not found page*/ path='*' element={<NotFound/>} />
         </Routes>
