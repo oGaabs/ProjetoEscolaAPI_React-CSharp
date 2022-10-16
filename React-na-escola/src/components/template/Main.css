@@ -1,7 +1,9 @@
 div.content {
     width: 80%;
-    height: 80%;
-    margin:auto;
+    /*height: 80%;*/
+
+    margin: auto;
+    padding: 2% 0 3% 0;
 }
 
 main > div {

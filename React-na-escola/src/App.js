@@ -11,10 +11,10 @@ function App() {
     return (
         <BrowserRouter>
             <div className="App">
-                <Footer />
                 <Logo />
                 <Menu />
                 <Rotas />
+                <Footer />
             </div>
         </BrowserRouter>
     );
