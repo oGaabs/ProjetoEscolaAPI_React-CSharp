@@ -84,7 +84,7 @@ export default function CrudCarometro() {
             {listaAlunosCmt.length > 0 ?
             listaAlunosCmt.map((aluno) => (
                 <div className="card draw-border" key={aluno.id} >
-                    <img  className="card-img" src={`https://avatars.dicebear.com/api/big-smile/${avatarAleatorio()}.svg`} alt={`Avatar: `+ aluno.nome}/>
+                    <img  className="card-img" src={avatarAleatorio()} alt={`Avatar: `+ aluno.nome}/>
                     <span className="card-title">{aluno.nome}</span>
                     <span className="card-description">RA: {aluno.ra} | Curso: {aluno.codCurso}</span>
                 </div>
