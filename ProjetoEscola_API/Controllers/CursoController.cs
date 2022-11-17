@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProjetoEscola_API.Data;
 using ProjetoEscola_API.Models;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjetoEscola_API.Controllers
 {
@@ -22,12 +23,14 @@ namespace ProjetoEscola_API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "professor")]
         public ActionResult<List<Curso>> GetAll()
         {
             return _context.Curso.ToList();
         }
 
         [HttpGet("{CursoId}")]
+        [Authorize(Roles = "professor")]
         public ActionResult<List<Curso>> Get(int CursoId)
         {
             try
@@ -39,11 +42,15 @@ namespace ProjetoEscola_API.Controllers
             }
             catch
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+                return this.StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    "Falha no acesso ao banco de dados."
+                );
             }
         }
 
         [HttpPost]
+        [Authorize(Roles = "professor")]
         public async Task<ActionResult> post(Curso model)
         {
             try
@@ -54,17 +61,20 @@ namespace ProjetoEscola_API.Controllers
                     //return Ok();
                     return Created($"/api/curso/{model.codCurso}", model);
                 }
-
             }
             catch
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+                return this.StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    "Falha no acesso ao banco de dados."
+                );
             }
             // retorna BadRequest se não conseguiu incluir
             return BadRequest();
         }
 
         [HttpPut("{CursoId}")]
+        [Authorize(Roles = "professor")]
         public async Task<IActionResult> put(int CursoId, Curso dadosCursoAlt)
         {
             try
@@ -73,7 +83,7 @@ namespace ProjetoEscola_API.Controllers
                 var result = await _context.Curso.FindAsync(CursoId);
                 if (CursoId != result.id)
                     return BadRequest();
-                
+
                 result.codCurso = dadosCursoAlt.codCurso;
                 result.nomeCurso = dadosCursoAlt.nomeCurso;
                 result.periodo = dadosCursoAlt.periodo;
@@ -83,11 +93,15 @@ namespace ProjetoEscola_API.Controllers
             }
             catch
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+                return this.StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    "Falha no acesso ao banco de dados."
+                );
             }
         }
 
         [HttpDelete("{CursoId}")]
+        [Authorize(Roles = "professor")]
         public async Task<ActionResult> delete(int CursoId)
         {
             try
@@ -105,7 +119,10 @@ namespace ProjetoEscola_API.Controllers
             }
             catch
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, "Falha no acesso ao banco de dados.");
+                return this.StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    "Falha no acesso ao banco de dados."
+                );
             }
         }
     }

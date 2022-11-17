@@ -1,9 +1,10 @@
-import React, { Component } from "react";
-import "./CrudAluno.css";
-import Main from "../template/Main";
-import axios from "axios";
+import React, { Component } from 'react'
+import './CrudAluno.css'
+import Main from '../template/Main'
 
-import { BsFillPencilFill, BsFillTrash2Fill } from "react-icons/bs";
+import UserService from '../../services/UserService'
+
+import { BsFillPencilFill, BsFillTrash2Fill } from 'react-icons/bs'
 
 /*
 import { ToastContainer, toast } from "react-toastify";
@@ -20,11 +21,11 @@ const toastConfig = {
     progress: undefined,
 }*/
 
-const sendSuccessPopUp = (text) => {
+const sendSuccessPopUp = (_text) => {
     //toast.success(text, toastConfig);
 }
 
-const sendMultipleErrorPopUp = (err) => {
+const sendMultipleErrorPopUp = (_err) => {
     /*
     let errors;
     try {
@@ -42,85 +43,99 @@ const sendMultipleErrorPopUp = (err) => {
     });*/
 }
 
-const title = "Cadastro de Alunos";
+const title = 'Cadastro de Alunos'
 
-const API_URL_ALUNO = "http://localhost:5147/api/aluno";
-const API_URL_CURSO = "http://localhost:5147/api/curso"
+const API_URL_ALUNO = 'http://localhost:5147/api/aluno'
 const initialState = {
-    aluno: { id: 0, ra: "", nome: "", codCurso: "" },
+    aluno: { id: 0, ra: '', nome: '', codCurso: '' },
     lista: [],
-    listaCurso: []
-};
+    listaCurso: [],
+    mens: []
+}
 
 export default class CrudAluno extends Component {
     constructor(props) {
-        super(props);
-        this.state = { ...initialState};
+        super(props)
+        this.state = { ...initialState }
     }
 
     componentDidMount() {
-        axios(API_URL_ALUNO)
-            .then((resp) => {
-                this.setState({ lista: resp.data });
-            })
-            .catch((err) => {
-                console.dir(err);
-
-                sendMultipleErrorPopUp(err)
-            });
-
-        axios(API_URL_CURSO)
-            .then((resp) => {
-                this.setState({ listaCurso: resp.data });
-            })
-            .catch((err) => {
-                console.dir(err);
-
-                sendMultipleErrorPopUp(err)
-            });
+        UserService.getProfessorBoardCursos().then(
+            (response) => {
+                console.log('useEffect getProfessorBoard: ' + response.data)
+                this.setState({ listaCurso: response.data })
+            },
+            (error) => {
+                const _mens =
+                    (error.response &&
+                        error.response.data &&
+                        error.response.data.message) ||
+                    error.message ||
+                    error.toString()
+                this.setState({mens: _mens})
+                console.log('_mens: ' + _mens)
+            }
+        )
+        UserService.getProfessorBoardAlunos().then(
+            (response) => {
+                console.log('useEffect getProfessorBoard: ' + response.data)
+                if (this.state.mens != null)
+                    this.setState({lista: response.data, mens: null})
+            },
+            (error) => {
+                const _mens =
+                    (error.response &&
+                        error.response.data &&
+                        error.response.data.message) ||
+                    error.message ||
+                    error.toString()
+                this.setState({mens: _mens})
+                console.log('_mens: ' + _mens)
+            }
+        )
     }
 
     limpar() {
-        this.setState({ aluno: initialState.aluno });
+        this.setState({ aluno: initialState.aluno })
     }
 
     salvar() {
         const aluno = this.state.aluno
-        const metodo = aluno.id ? "put" : "post"
+        const metodo = aluno.id ? 'put' : 'post'
         const url = aluno.id ? `${API_URL_ALUNO}/${aluno.id}` : API_URL_ALUNO
 
-        axios[metodo](url, aluno)
+        UserService.salvarAluno(metodo, url, aluno)
             .then((resp) => {
-                const lista = this.getListaAtualizada(resp.data);
+                const lista = this.getListaAtualizada(resp.data)
 
-                this.setState({ aluno: initialState.aluno, lista });
-                sendSuccessPopUp(`Método ${metodo} efetuado com sucesso!`);
+                this.setState({ aluno: initialState.aluno, lista })
+                sendSuccessPopUp(`Método ${metodo} efetuado com sucesso!`)
             })
             .catch((err) => {
-                console.dir(err);
+                console.dir(err)
 
                 sendMultipleErrorPopUp(err)
-            });
+            })
     }
 
     getListaAtualizada(aluno, add = true) {
-        const lista = this.state.lista.filter((a) => a.id !== aluno.id);
-        if (add) lista.unshift(aluno);
-        return lista;
+        const lista = this.state.lista.filter((a) => a.id !== aluno.id)
+        if (add) lista.unshift(aluno)
+        return lista
     }
 
     atualizaCampo(event) {
         //clonar usuário a partir do state, para não alterar o state diretamente
-        const aluno = { ...this.state.aluno };
+        const aluno = { ...this.state.aluno }
         //usar o atributo NAME do input identificar o campo a ser atualizado
-        aluno[event.target.name] = event.target.value;
+        aluno[event.target.name] = event.target.value
         //atualizar o state
-        this.setState({ aluno });
+        this.setState({ aluno })
     }
 
     atualizaCurso(event) {
-        const aluno = { ...this.state.aluno };
-        aluno.codCurso = Number(event.target.value);
+        const aluno = { ...this.state.aluno }
+        aluno.codCurso = Number(event.target.value)
         this.setState({ aluno })
     }
 
@@ -129,20 +144,19 @@ export default class CrudAluno extends Component {
     }
 
     remover(aluno) {
-        const url = API_URL_ALUNO + "/" + aluno.id;
-        if (!window.confirm("Confirma remoção do aluno: " + aluno.ra)) return;
+        if (!window.confirm('Confirma remoção do aluno: ' + aluno.ra)) return
 
-        axios["delete"](url, aluno)
+        UserService.deletarAluno(aluno.id)
             .then((_resp) => {
-                const lista = this.getListaAtualizada(aluno, false);
-                this.setState({ aluno: initialState.aluno, lista });
-                sendSuccessPopUp("Aluno removido com sucesso!");
+                const lista = this.getListaAtualizada(aluno, false)
+                this.setState({ aluno: initialState.aluno, lista })
+                sendSuccessPopUp('Aluno removido com sucesso!')
             })
             .catch((err) => {
-                console.dir(err);
+                console.dir(err)
 
                 sendMultipleErrorPopUp(err)
-            });
+            })
     }
 
     renderForm() {
@@ -169,15 +183,15 @@ export default class CrudAluno extends Component {
                     onChange={(e) => this.atualizaCampo(e)}
                 />
                 <label> Curso: </label>
-                <select name="codCurso" value={this.state.aluno.codCurso}  onChange={e => { this.atualizaCurso(e)}} required>
+                <select name="codCurso" value={this.state.aluno.codCurso} onChange={e => { this.atualizaCurso(e) }} required>
                     <option disabled={true} key="" value="">  -- Escolha uma opção -- </option>
-                    {this.state.listaCurso.map( (curso) =>
-                            <option  key={curso.id} name="codCurso" value={curso.codCurso}>
-                                { curso.codCurso } - { curso.nomeCurso } : { curso.periodo }
-                            </option>
+                    {this.state.listaCurso.map((curso) =>
+                        <option key={curso.id} name="codCurso" value={curso.codCurso}>
+                            {curso.codCurso} - {curso.nomeCurso} : {curso.periodo}
+                        </option>
                     )}
                 </select>
-                <br/>
+                <br />
                 <button
                     className="btn btnSalvar"
                     onClick={(e) => this.salvar(e)}
@@ -191,7 +205,7 @@ export default class CrudAluno extends Component {
                     Cancelar
                 </button>
             </div>
-        );
+        )
     }
 
     renderTable() {
@@ -232,14 +246,21 @@ export default class CrudAluno extends Component {
                     </tbody>
                 </table>
             </div>
-        );
+        )
     }
 
     render() {
         return (
             <Main title={title}>
-                {this.renderForm()}
-                {this.renderTable()}
+                {console.log(this.state.mens)}
+                {
+
+                    (this.state.mens != null) ? 'Problema com conexão ou autorização (contactar administrador).' :
+                        <>
+                            {this.renderForm()}
+                            {this.renderTable()}
+                        </>
+                }
                 {/*
                 <ToastContainer
                     limit={5}
@@ -254,7 +275,7 @@ export default class CrudAluno extends Component {
                     pauseOnHover
                 />*/}
             </Main>
-        );
+        )
     }
 }
 

@@ -5,7 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProjetoEscola_API.Data;
 using ProjetoEscola_API.Models;
-using System.ComponentModel.DataAnnotations;
+
+using Microsoft.AspNetCore.Authorization;
 
 namespace ProjetoEscola_API.Controllers
 {
@@ -23,6 +24,7 @@ namespace ProjetoEscola_API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "professor")]
         public ActionResult<List<Aluno>> GetAll()
         {
             return _context.Aluno.ToList();
@@ -30,6 +32,7 @@ namespace ProjetoEscola_API.Controllers
 
 
         [HttpGet("{AlunoId}")]
+        [Authorize(Roles = "professor")]
         public ActionResult<List<Aluno>> Get(int AlunoId)
         {
             try
@@ -91,6 +94,7 @@ namespace ProjetoEscola_API.Controllers
         */
 
         [HttpPost]
+        [Authorize(Roles = "professor")]
         public async Task<ActionResult> post(Aluno model)
         {
             try
@@ -112,6 +116,7 @@ namespace ProjetoEscola_API.Controllers
         }
 
         [HttpPut("{AlunoId}")]
+        [Authorize(Roles = "professor")]
         public async Task<IActionResult> put(int AlunoId, Aluno dadosAlunoAlt)
         {
             try
@@ -135,6 +140,7 @@ namespace ProjetoEscola_API.Controllers
         }
 
         [HttpDelete("{AlunoId}")]
+        [Authorize(Roles = "professor")]
         public async Task<ActionResult> delete(int AlunoId)
         {
             try

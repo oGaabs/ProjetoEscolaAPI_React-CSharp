@@ -12,12 +12,12 @@ namespace ProjetoEscola_API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class HomeController : ControllerBase
+    public class LoginController : ControllerBase
     {
         private readonly IConfiguration _configuration;
         private readonly EscolaContext? _context;
 
-        public HomeController(IConfiguration configuration, EscolaContext context)
+        public LoginController(IConfiguration configuration, EscolaContext context)
         {
             _configuration = configuration;
             _context = context;

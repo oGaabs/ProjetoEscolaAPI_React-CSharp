@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
-import "../CrudCurso/CrudCurso.css";
-import Main from "../template/Main";
-import axios from "axios";
+import React, { useState, useEffect } from 'react'
+import '../CrudCurso/CrudCurso.css'
+import Main from '../template/Main'
 
-import { BsFillPencilFill, BsFillTrash2Fill } from "react-icons/bs";
+import UserService from '../../services/UserService'
+
+import { BsFillPencilFill, BsFillTrash2Fill } from 'react-icons/bs'
 /*
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.min.css";
@@ -19,11 +20,11 @@ const toastConfig = {
     progress: undefined,
 }*/
 
-const sendSuccessPopUp = (text) => {
+const sendSuccessPopUp = (_text) => {
     //toast.success(text, toastConfig);
-};
+}
 
-const sendMultipleErrorPopUp = (err) => {
+const sendMultipleErrorPopUp = (_err) => {
     /*
     let errors;
     try {
@@ -39,93 +40,99 @@ const sendMultipleErrorPopUp = (err) => {
             `Falha ao conectar ao banco de dados: \n ${err}`
         );
     });*/
-};
+}
 
-const API_URL = "http://localhost:5147/api/curso";
-const getDataFromApi = async () => {
-    return await axios(API_URL)
-        .then((resp) => resp.data)
-        .catch((err) => err);
-};
+const API_URL = 'http://localhost:5147/api/curso'
 
 export default function CrudCurso() {
     const initialState = {
-        curso: { id: 0, codCurso: 0, nomeCurso: "", periodo: "" },
+        curso: { id: 0, codCurso: 0, nomeCurso: '', periodo: '' },
         lista: [],
-    };
+        mens: []
+    }
 
-    const title = "Cadastro de Cursos";
-    const [curso, setCurso] = useState(initialState.curso);
-    const [lista, setLista] = useState(initialState.lista);
+    const title = 'Cadastro de Cursos'
+    const [curso, setCurso] = useState(initialState.curso)
+    const [lista, setLista] = useState(initialState.lista)
+    const [mens, setMens] = useState(initialState.mens)
 
     useEffect(() => {
-        getDataFromApi()
-            .then(setLista)
-            .catch((err) => {
-                console.log(err);
+        UserService.getProfessorBoardCursos().then(
+            (response) => {
+                console.log('useEffect getProfessorBoard: ' + response.data)
+                setLista(response.data)
+                setMens(null)
+            },
+            (error) => {
+                const _mens =
+                    (error.response &&
+                        error.response.data &&
+                        error.response.data.message) ||
+                    error.message ||
+                    error.toString()
+                setMens(_mens)
+                console.log('_mens: ' + _mens)
+            }
+        )
+    }, [curso])
 
-                sendMultipleErrorPopUp(err);
-            });
-    }, [curso]);
-
-    const limparCurso = () => setCurso(initialState.curso);
+    const limparCurso = () => setCurso(initialState.curso)
 
     const salvarCurso = () => {
-        const metodo = curso.id ? "put" : "post";
-        const url = curso.id ? `${API_URL}/${curso.id}` : API_URL;
+        const metodo = curso.id ? 'put' : 'post'
+        const url = curso.id ? `${API_URL}/${curso.id}` : API_URL
 
-        curso.codCurso = Number(curso.codCurso);
+        curso.codCurso = Number(curso.codCurso)
 
-        axios[metodo](url, curso)
+        UserService.salvarAluno(metodo, url, curso)
             .then((resp) => {
-                const lista = getListaAtualizada(resp.data);
+                const lista = getListaAtualizada(resp.data)
 
-                setCurso(initialState.curso);
-                setLista(lista);
-                sendSuccessPopUp(`Método ${metodo} efetuado com sucesso!`);
+                setCurso(initialState.curso)
+                setLista(lista)
+                sendSuccessPopUp(`Método ${metodo} efetuado com sucesso!`)
             })
             .catch((err) => {
-                console.error(err);
+                console.error(err)
 
-                sendMultipleErrorPopUp(err);
-            });
-    };
+                sendMultipleErrorPopUp(err)
+            })
+    }
 
     const getListaAtualizada = (curso, add = true) => {
-        const listaNova = lista.filter((a) => a.id !== curso.id);
-        if (add) listaNova.unshift(curso);
-        return listaNova;
-    };
+        const listaNova = lista.filter((a) => a.id !== curso.id)
+        if (add) listaNova.unshift(curso)
+        return listaNova
+    }
 
     const atualizaCampo = (event) => {
-        const { name, value } = event.target;
+        const { name, value } = event.target
 
         setCurso({
             ...curso,
             [name]: value,
-        });
-    };
+        })
+    }
 
-    const atualizarCurso = (curso) => setCurso(curso);
+    const atualizarCurso = (curso) => setCurso(curso)
 
     const removerCurso = (curso) => {
-        const url = API_URL + "/" + curso.id;
-        if (!window.confirm("Confirma remoção do curso: " + curso.nomeCurso))
-            return;
+        if (!window.confirm('Confirma remoção do curso: ' + curso.nomeCurso))
+            return
 
-        axios["delete"](url, curso)
+        UserService.deletarCurso(curso.id)
             .then((_resp) => {
-                const lista = getListaAtualizada(curso, false);
-                setCurso(initialState.curso);
-                setLista(lista);
-                sendSuccessPopUp("Curso removido com sucesso!");
+                const lista = getListaAtualizada(curso, false)
+                setCurso(initialState.curso)
+                setLista(lista)
+                sendSuccessPopUp('Curso removido com sucesso!')
             })
             .catch((err) => {
-                console.dir(err);
+                console.dir(err)
 
-                sendMultipleErrorPopUp(err);
-            });
-    };
+                sendMultipleErrorPopUp(err)
+            })
+    }
 
     const renderForm = () => {
         return (
@@ -174,8 +181,8 @@ export default function CrudCurso() {
                     Cancelar
                 </button>
             </div>
-        );
-    };
+        )
+    }
 
     const renderTable = () => {
         return (
@@ -221,13 +228,18 @@ export default function CrudCurso() {
                     </tbody>
                 </table>
             </div>
-        );
-    };
+        )
+    }
 
     return (
         <Main title={title}>
-            {renderForm()}
-            {renderTable()}
+            {
+                (mens != null) ? 'Problema com conexão ou autorização (contactar administrador).' :
+                    <>
+                        {renderForm()}
+                        {renderTable()}
+                    </>
+            }
             {/*
             <ToastContainer
                 limit={5}
@@ -242,5 +254,5 @@ export default function CrudCurso() {
                 pauseOnHover
             />*/}
         </Main>
-    );
+    )
 }
